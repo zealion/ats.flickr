@@ -1,0 +1,21 @@
+**********
+version history
+**********
+>> v0.1
+1 flickr account
+max 20 photos
+<< v0.1
+
+
+
+**********
+backlog
+**********
+>> v0.1
+upload page html
+preview page html
+upload page logic
+preview page logic
+<< v0.1
+
+register zealion yahoo! id and API key
