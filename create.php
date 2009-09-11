@@ -1,3 +1,20 @@
+<?php
+/**
+create.php
+upload form to create a slideshow and upload photo to it, then open view.php to preview the created slideshow and to get embed code
+
+test cases:
+slideshow name exists, change before upload
+no photo specified, at least 1 photo required
+upload failed somehow, if slideshow is created (a photoset on flickr), delete it first
+any photo must be in jpg format, and less than 1MB
+
+same photo upload 1+ times in one slideshow is ok
+<20 photo specified is ok
+photo descriptions are optional
+
+**/
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -115,14 +132,51 @@ function validate_form(thisform)
 </head>
 <body>
 <?php
-include_once 'kit/SSUtil.php';
+require_once("phpFlickr/phpFlickr.php");
+$N_FILE = 20;
+$DEBUG = true;
 
 if (array_key_exists('_submit_check', $_POST))
 {
-    $apiobj=new SSUtil();
-
+    $f = new phpFlickr("8b2eafdf6fd3855e7c69db2cbf86fa57", "3fb77392a309851c");
+    $f->setToken('72157622210636403-2c78bae888fb994f'); 
+    
     error_reporting(E_ALL);
 
+    print_r($_FILES);
+    // upload files
+    //$file_names = array();
+    for( $i=1; $i<=$N_FILE; $i++)
+    {
+        $file_names[$i-1] = $_FILES["srcfile"+$i]["tmp_name"];
+    }
+
+    print_r($file_names);
+    
+    // create photoset
+
+    // return embed preview
+
+    $id = $f->photosets_create("test_slideshow1", "", 1);
+    if (!$id && $DEBUG) echo $f->getErrorMsg();
+    
+    echo $id . "<br/>";
+    /*
+    $recent = $f->photos_getRecent(); 
+    
+    foreach ($recent['photo'] as $photo) { 
+        $owner = $f->people_getInfo($photo['owner']); 
+        echo "<a href='http://www.flickr.com/photos/" . $photo['owner'] . "/" . $photo['id'] . "/'>"; 
+        echo $photo['title']; 
+        echo "</a> Owner: "; 
+        echo "<a href='http://www.flickr.com/people/" . $photo['owner'] . "/'>"; 
+        echo $owner['username']; 
+        echo "</a><br>"; 
+    }
+     */
+
+
+/*
     $request = 'http://www.slideshare.net/api/2/upload_slideshow';
     $username = 'zealion';
     $password = '8765431';
@@ -187,7 +241,8 @@ if (array_key_exists('_submit_check', $_POST))
 
     echo $response . "<br>";
     print htmlspecialchars($xml, ENT_QUOTES);
-     */
+ */
+
 }
 ?>
 <div class="wrapper">
