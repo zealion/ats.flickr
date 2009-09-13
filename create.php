@@ -8,6 +8,7 @@ slideshow name exists, change before upload
 no photo specified, at least 1 photo required
 upload failed somehow, if slideshow is created (a photoset on flickr), delete it first
 any photo must be in jpg format, and less than 1MB
+return any error code from flickr upload process
 
 same photo upload 1+ times in one slideshow is ok
 <20 photo specified is ok
@@ -21,67 +22,7 @@ photo descriptions are optional
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Language" content="zh-cn">
 <title>创建新的在线共享幻灯片</title>
-<style type="text/css">
-body{
-font-size: 0.75em;
-}
-.wrapper{
-display: block;
-width: 100%;
-text-align: center;
-}
-#create_box{
-display: block;
-border: 1px solid #ccc;
-width: 500px;
-height: auto;
-margin-left: auto;
-margin-right: auto;
-text-align: center;
-background: url("bg.gif") no-repeat right bottom;
-}
-#create_box table.form{
-padding: 0;
-margin: 0;
-border: 0;
-text-align: left;
-margin-left: auto;
-margin-right: auto;
-}
-#create_box .title{
-font-size: 13px;
-font-weight: bold;
-display:block;
-background-color: #ddd;
-padding: 5px 5px;
-}
-#create_box .note{
-padding: 15px 5px;
-display: block;
-}
-#create_box .upload{
-padding-top: 25px;
-}
-#create_box #result a{
-padding: 5px 5px;
-margin-top: 15px;
-margin-left: auto;
-margin-right: auto;
-color: #333;
-width: 75px;
-font-size: 13px;
-display: block;
-border: 1px solid #33aa33;
-background-color: #88cc88;
-text-decoration: none;
-}
-#create_box #result a:hover{
-background-color: #aaddaa;
-}
-#create_box .error{
-color: red;
-}
-</style>
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="style.css" />
 <script type="text/javascript">
 function validate_required(field,alerttxt)
 {
@@ -134,25 +75,34 @@ function validate_form(thisform)
 <?php
 require_once("phpFlickr/phpFlickr.php");
 $N_FILE = 20;
-$DEBUG = true;
+$DEBUG  = true;
+$KEY    = "8b2eafdf6fd3855e7c69db2cbf86fa57";
+$SS     = "3fb77392a309851c";
+$TOKEN  = '72157622210636403-2c78bae888fb994f'; 
 
 if (array_key_exists('_submit_check', $_POST))
 {
-    $f = new phpFlickr("8b2eafdf6fd3855e7c69db2cbf86fa57", "3fb77392a309851c");
-    $f->setToken('72157622210636403-2c78bae888fb994f'); 
+    $f = new phpFlickr($KEY, $SS);
+    $f->setToken($TOKEN); 
     
     error_reporting(E_ALL);
 
     print_r($_FILES);
+
     // upload files
-    //$file_names = array();
     for( $i=1; $i<=$N_FILE; $i++)
     {
-        $file_names[$i-1] = $_FILES["srcfile"+$i]["tmp_name"];
+        $file_names[$i-1] = "";
+        if( isset($_FILES["srcfile"+$i])) 
+            $file_names[$i-1] = $_FILES["srcfile"+$i]["tmp_name"];
     }
 
-    print_r($file_names);
-    
+    for( $i=1; $i<=$N_FILE; $i++)
+    {
+        if( !empty( $file_names[$i-1] ))
+            $f->sync_upload($file_names[$i-1]);
+    }
+
     // create photoset
 
     // return embed preview
