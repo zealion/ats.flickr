@@ -1,59 +1,75 @@
 body{
-font-size: 0.75em;
+    font-size: 0.75em;
 }
 .wrapper{
-display: block;
-width: 100%;
-text-align: center;
+    display: block;
+    width: 100%;
+    text-align: center;
 }
 #create_box{
-display: block;
-border: 1px solid #ccc;
-width: 500px;
-height: auto;
-margin-left: auto;
-margin-right: auto;
-text-align: center;
-background: url("bg.gif") no-repeat right bottom;
+    display: block;
+    border: 1px solid #ccc;
+    width: 700px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    background: url("bg.gif") no-repeat right bottom;
 }
 #create_box table.form{
-padding: 0;
-margin: 0;
-border: 0;
-text-align: left;
-margin-left: auto;
-margin-right: auto;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
 }
 #create_box .title{
-font-size: 13px;
-font-weight: bold;
-display:block;
-background-color: #ddd;
-padding: 5px 5px;
+    font-size: 14px;
+    display:block;
+    padding-top: 12px;
+    height: 38px;
+    vertical-align: middle;
+    color: #fff;
+    background-color: #333;
 }
 #create_box .note{
-padding: 15px 5px;
-display: block;
+    vertical-align: middle;
+    padding: 5px 5px;
+    display: block;
+    background-color: #666;
+    color: #fff;
+    font-size: 11px;
 }
 #create_box .upload{
-padding-top: 25px;
 }
 #create_box #result a{
-padding: 5px 5px;
-margin-top: 15px;
-margin-left: auto;
-margin-right: auto;
-color: #333;
-width: 75px;
-font-size: 13px;
-display: block;
-border: 1px solid #33aa33;
-background-color: #88cc88;
-text-decoration: none;
+    padding: 5px 5px;
+    margin-top: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #333;
+    width: 75px;
+    font-size: 13px;
+    display: block;
+    border: 1px solid #33aa33;
+    background-color: #88cc88;
+    text-decoration: none;
 }
 #create_box #result a:hover{
-background-color: #aaddaa;
+    background-color: #aaddaa;
 }
 #create_box .error{
-color: red;
+    color: red;
+}
+#create_box table.form{
+    border: solid 5px #eee;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border-spacing: 0;
+}
+#create_box table.form .slide_title{
+    background-color: #eee;
+    height: 21px;
 }
