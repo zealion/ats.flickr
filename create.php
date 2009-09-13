@@ -76,56 +76,62 @@ function validate_form(thisform)
 require_once("phpFlickr/phpFlickr.php");
 $N_FILE = 20;
 $DEBUG  = true;
-$KEY    = "8b2eafdf6fd3855e7c69db2cbf86fa57";
-$SS     = "3fb77392a309851c";
-$TOKEN  = '72157622210636403-2c78bae888fb994f'; 
+$KEY    = "e4bc152ff742de095b680187acaaf02b";
+$SS     = "9c6348bf7d027818";
+$TOKEN  = '72157622227682417-754eb103dfdec4fb'; 
 
 if (array_key_exists('_submit_check', $_POST))
 {
     $f = new phpFlickr($KEY, $SS);
     $f->setToken($TOKEN); 
-    
-    error_reporting(E_ALL);
 
-    print_r($_FILES);
+    if( $DEBUG ) error_reporting(E_ALL); // if not called, which report level then?
 
     // upload files
+    $file_names = array();
     for( $i=1; $i<=$N_FILE; $i++)
     {
         $file_names[$i-1] = "";
-        if( isset($_FILES["srcfile"+$i])) 
-            $file_names[$i-1] = $_FILES["srcfile"+$i]["tmp_name"];
+        if( isset($_FILES["srcfile".$i])) 
+            $file_names[$i-1] = $_FILES["srcfile".$i]["tmp_name"];
     }
 
+    /*
+    print_r($_FILES);
+    echo "<br/>";
+    print_r($file_names);
+     */
+    $photo_ids = array();
     for( $i=1; $i<=$N_FILE; $i++)
     {
+        $photo_ids[$i-1] = -1;
         if( !empty( $file_names[$i-1] ))
-            $f->sync_upload($file_names[$i-1]);
+        {
+            $id = $f->sync_upload($file_names[$i-1], $_POST["slide_caption".$i]);
+            if(!$id && $DEBUG)
+            {
+                $e = $f->getErrorCode();
+                echo $e . ":" . $f->getErrorMsg();
+            }
+            else
+            {
+                $photo_ids[$i-1] = $id;
+            }
+        }
     }
 
     // create photoset
-
+    $set_id = $f->photosets_create($_POST["slideshow_title"], "", 3914673296);
+    if (!$set_id && $DEBUG) echo $f->getErrorMsg();
+    else echo $set_id . "<br/>";
+    for( $i=1; $i<=$N_FILE; $i++)
+    {
+        if( $photo_ids[$i-1] > 0 )
+            $f->photosets_addPhoto($set_id, $photo_ids[$i-1]);
+    }
     // return embed preview
 
-    $id = $f->photosets_create("test_slideshow1", "", 1);
-    if (!$id && $DEBUG) echo $f->getErrorMsg();
-    
-    echo $id . "<br/>";
-    /*
-    $recent = $f->photos_getRecent(); 
-    
-    foreach ($recent['photo'] as $photo) { 
-        $owner = $f->people_getInfo($photo['owner']); 
-        echo "<a href='http://www.flickr.com/photos/" . $photo['owner'] . "/" . $photo['id'] . "/'>"; 
-        echo $photo['title']; 
-        echo "</a> Owner: "; 
-        echo "<a href='http://www.flickr.com/people/" . $photo['owner'] . "/'>"; 
-        echo $owner['username']; 
-        echo "</a><br>"; 
-    }
-     */
-
-
+       
 /*
     $request = 'http://www.slideshare.net/api/2/upload_slideshow';
     $username = 'zealion';
@@ -158,41 +164,7 @@ if (array_key_exists('_submit_check', $_POST))
         unlink($temp_file_name);
     }
         //$slideshow_srcfile = "@/Users/lingfei/Code/zealion/ssats/test.ppt";
-    /*
-    $api_key = 'nEGnb3DQ';
-    $ss = 'jBjhAB5G';
-    $ts = time();
-
-    $hash = sha1($ss . $ts);
-    //$args = sprintf("username=%s&password=%s&slideshow_title=%s&slideshow_srcfile=%s&api_key=%s&ts=%d&hash=%s", $username, $password, $slideshow_title, $slideshow_srcfile, $api_key, $ts, $hash);
-    $args = Array
-        (
-            'username' => $username,
-            'password' => $password,
-            'slideshow_title' => $slideshow_title,
-            'slideshow_srcfile' => $slideshow_srcfile,
-            'api_key' => $api_key,
-            'ts' => $ts,
-            'hash' => $hash,
-            );
-
-    $session = curl_init($request);
-    curl_setopt ($session, CURLOPT_POST, true);
-    curl_setopt ($session, CURLOPT_POSTFIELDS, $args);
-    curl_setopt($session, CURLOPT_HEADER, true);
-    curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
-
-    $response = curl_exec($session);
-    curl_close($session);
-
-    if (!($xml = strstr($response, '<?xml'))) {
-        $xml = null;
-    }
-
-    echo $response . "<br>";
-    print htmlspecialchars($xml, ENT_QUOTES);
- */
-
+*/
 }
 ?>
 <div class="wrapper">
